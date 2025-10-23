@@ -1,40 +1,29 @@
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
-
+const express = require("express");
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 
-const users = JSON.parse(fs.readFileSync('users.json'));
-
-// Endpoint cek server
-app.get('/', (req, res) => {
-  res.json({ message: 'Login API is running 🚀' });
+// Cek koneksi
+app.get("/", (req, res) => {
+  res.send("API Flutter Login is running on Railway!");
 });
 
 // Endpoint login
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
-
-  if (user) {
+  if (username === "admin" && password === "12345") {
     res.json({
-      status: 'success',
-      message: 'Login berhasil',
-      user: { id: user.id, username: user.username },
+      success: true,
+      message: "Login berhasil",
     });
   } else {
     res.status(401).json({
-      status: 'error',
-      message: 'Username atau password salah',
+      success: false,
+      message: "Username atau password salah",
     });
   }
 });
 
-// Jalankan server
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
